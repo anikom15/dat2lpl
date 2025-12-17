@@ -238,7 +238,7 @@ def main():
     parser.add_argument("--map", help="JSON file mapping country/region to output value (requires -r)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument("--enable-network-validation", action="store_true", help="Allow network access for XML schema validation")
-    parser.add_argument("--version", action="version", version="dat2lpl 1.0")
+    parser.add_argument("--version", action="version", version="dat2lpl 1.1.0")
     args = parser.parse_args()
 
     if not validate_xml(args.input, args.verbose, args.enable_network_validation):
