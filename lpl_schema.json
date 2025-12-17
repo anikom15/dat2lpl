@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LPL Playlist",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string" },
+    "default_core_path": { "type": "string" },
+    "default_core_name": { "type": "string" },
+    "label_display_mode": { "type": "integer" },
+    "right_thumbnail_mode": { "type": "integer" },
+    "left_thumbnail_mode": { "type": "integer" },
+    "thumbnail_match_mode": { "type": "integer" },
+    "sort_mode": { "type": "integer" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string" },
+          "label": { "type": "string" },
+          "core_path": { "type": "string" },
+          "core_name": { "type": "string" },
+          "crc32": { "type": "string" },
+          "db_name": { "type": "string" }
+        },
+        "required": [
+          "path",
+          "label",
+          "core_path",
+          "core_name",
+          "crc32",
+          "db_name"
+        ]
+      }
+    }
+  },
+  "required": [
+    "version",
+    "default_core_path",
+    "default_core_name",
+    "label_display_mode",
+    "right_thumbnail_mode",
+    "left_thumbnail_mode",
+    "thumbnail_match_mode",
+    "sort_mode",
+    "items"
+  ]
+}
