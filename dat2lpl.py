@@ -169,7 +169,7 @@ def dat2lpl_split(args, games, header_description):
 
     return lpl
 
-def dat2lpl_merged(args, games, header_description):
+def dat2lpl_merged(args, games, header_description, games_master):
     """
     Convert DAT XML to LPL JSON playlist for merged sets.
     If games/header_description are provided, use them (for region split mode).
@@ -177,6 +177,7 @@ def dat2lpl_merged(args, games, header_description):
     """
     if games is None or header_description is None:
         header_description, games = read_dat(args.input, getattr(args, 'verbose', False))
+        games_master = games
     if getattr(args, 'verbose', False):
         print(f"Header description: {header_description}")
         print(f"Found {len(games)} games.")
@@ -196,7 +197,7 @@ def dat2lpl_merged(args, games, header_description):
     }
 
     db_name = f"{header_description}.lpl" if header_description else "playlist.lpl"
-    id_to_name = {g['id']: g['name'] for g in games if g['id']}
+    id_to_name = {g['id']: g['name'] for g in games_master if g['id']}
 
     for game in games:
         if not game['roms']:
@@ -246,7 +247,7 @@ def main():
 
     if not args.region_split:
         if args.storage_mode == "Merged":
-            lpl = dat2lpl_merged(args, None, None)
+            lpl = dat2lpl_merged(args, None, None, None)
         else:
             lpl = dat2lpl_split(args, None, None)
 
@@ -262,7 +263,7 @@ def main():
         return
 
     # Region split mode with mapping
-    header_description, games = read_dat(args.input, getattr(args, 'verbose', False))
+    header_description, games_master = read_dat(args.input, getattr(args, 'verbose', False))
     # Load mapping file
     if (args.map is not None):
         try:
@@ -277,7 +278,7 @@ def main():
     # Build output_value -> list of games
     output_map = {}  # output_value -> list of games
     all_output_values = set(region_map_json.values())
-    for g in games:
+    for g in games_master:
         regions = g['regions']
         if not regions:
             continue
@@ -307,7 +308,7 @@ def main():
     # Output a file for each output value
     for outval, out_games in output_map.items():
         if args.storage_mode == "Merged":
-            lpl = dat2lpl_merged(args, out_games, header_description)
+            lpl = dat2lpl_merged(args, out_games, header_description, games_master)
         else:
             lpl = dat2lpl_split(args, out_games, header_description)
         # Output file name: output-filename (output_value).lpl
@@ -320,7 +321,7 @@ def main():
             json.dump(lpl, f, indent=2)
 
     # Output a special file for games with no region
-    no_region_games = [g for g in games if not g['regions']]
+    no_region_games = [g for g in games_master if not g['regions']]
     if no_region_games:
         if args.storage_mode == "Merged":
             lpl = dat2lpl_merged(args, no_region_games, header_description)
