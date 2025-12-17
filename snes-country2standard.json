@@ -1,0 +1,21 @@
+{
+  "Japan": "NTSC-J",
+  "Korea": "NTSC-M",
+  "France": "SECAM-L",
+  "Germany": "PAL-G",
+  "Italy": "PAL-G",
+  "Netherlands": "PAL-G",
+  "Spain": "PAL-G",
+  "Sweden": "PAL-G",
+  "Scandinavia": "PAL-G",
+  "Europe": "PAL-G",
+  "Australia": "PAL-G",
+  "Brazil": "PAL-M",
+  "Peru": "NTSC-M",
+  "Canada": "NTSC-M",
+  "USA": "NTSC-M",
+  "China": "SECAM-D",
+  "Hong Kong": "PAL-I",
+  "Taiwan": "NTSC-M",
+  "Unknown": "Unknown"
+}

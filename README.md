@@ -10,23 +10,34 @@ This tool converts DAT XML files (such as those used by No-Intro) into LPL JSON 
 ## Usage
 
 ```
-python dat2lpl.py <input_dat.xml> --input-path <ROM_ROOT_PATH> [--archive-format {None,.zip,.7z}] [-o output.lpl] [-v]
+python dat2lpl.py <input_dat.xml> --input-path <ROM_ROOT_PATH> [--archive-format {None,.zip,.7z}] [-s {Non-merged,Split,Merged}] [-o output.lpl] [-r] [--map MAPFILE] [-v] [--enable-network-validation]
 ```
 
 - `<input_dat.xml>`: Path to the No-Intro style DAT XML file.
 - `--input-path`: Root directory where ROMs are stored (required).
 - `--archive-format`: Archive format for ROMs (`None`, `.zip`, or `.7z`). Default is `.7z`.
-- `-o`: Output LPL file name. Default is `output.lpl`.
-- `-v`: Enable verbose output.
+- `-s`, `--storage-mode`: ROM storage mode: `Non-merged`, `Split`, or `Merged`. Default is `Merged`.
+- `-o`, `--output`: Output LPL file name. Default is `output.lpl`.
+- `-r`, `--region-split`: Produce separate output files by region.
+- `--map`: JSON file mapping country/region to output value (requires `-r`).
+- `-v`, `--verbose`: Enable verbose output.
+- `--enable-network-validation`: Allow network access for XML schema validation.
 
 ## Example
 
 ```
-python dat2lpl.py sample.dat --input-path "E:\ROM\No-Intro\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -v
+python dat2lpl.py sample.dat --input-path "E:\ROM\No-Intro\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -s Merged -v
+```
+
+Region split example:
+
+```
+python dat2lpl.py sample.dat --input-path "E:\ROM\No-Intro\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -r --map snes-country2standard.json -v
 ```
 
 ## Output
 - Produces an LPL playlist file suitable for use with RetroArch.
+- If `--region-split` is used, produces one LPL file per region (according to the mapping file), plus a file for games with no region.
 
 ## License
 See COPYING for license information.
