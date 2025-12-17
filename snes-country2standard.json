@@ -1,6 +1,6 @@
 {
   "Japan": "NTSC-J",
-  "Korea": "NTSC-M",
+  "Korea": "NTSC-M (Korea)",
   "France": "SECAM-L",
   "Germany": "PAL-G",
   "Italy": "PAL-G",
@@ -14,9 +14,9 @@
   "Peru": "NTSC-M",
   "Canada": "NTSC-M",
   "USA": "NTSC-M",
-  "China": "SECAM-D",
-  "Hong Kong": "PAL-I",
-  "Taiwan": "NTSC-M",
+  "China": "NTSC-M (Taiwan)",
+  "Hong Kong": "NTSC-M (Taiwan)",
+  "Taiwan": "NTSC-M (Taiwan)",
   "Unknown": "NTSC-M",
   "World": "World"
 }
