@@ -94,21 +94,31 @@ def read_dat(xml_path, verbose=False):
     games = []
     for game in root.findall('game'):
         name = game.get('name')
-        # Only use the first valid parenthesis group at the end for region(s)
+        # First parenthesis group is region(s), all others are tags
         regions = []
+        tags = []
         if name:
-            # Find the first parenthesis group from the start with valid region characters
-            match = re.search(r'\(([A-Za-z .\-]+(?:,[A-Za-z .\-]+)*)\)', name)
-            if match:
-                region_text = match.group(1)
-                # Split by comma, strip whitespace, filter out empty
+            # Find all parenthesis groups
+            matches = list(re.finditer(r'\(([A-Za-z0-9 .\-]+(?:,[A-Za-z0-9 .\-]+)*)\)', name))
+            if matches:
+                # First group is region(s)
+                region_text = matches[0].group(1)
                 regions = [r.strip() for r in region_text.split(',') if r.strip()]
+                # All remaining groups are tags
+                for m in matches[1:]:
+                    tag_text = m.group(1)
+                    tags.extend([t.strip() for t in tag_text.split(',') if t.strip()])
+            if verbose:
+                print(f"Game: {name}")
+                print(f"  Regions: {regions}")
+                print(f"  Tags: {tags}")
         game_info = {
             'name': name,
             'id': game.get('id'),
             'cloneofid': game.get('cloneofid'),
             'roms': [],
-            'regions': regions
+            'regions': regions,
+            'tags': tags
         }
         for rom in game.findall('rom'):
             rom_info = {
@@ -117,6 +127,18 @@ def read_dat(xml_path, verbose=False):
             }
             game_info['roms'].append(rom_info)
         games.append(game_info)
+    
+    if verbose:
+        # Collect all unique regions and tags
+        all_regions = set()
+        all_tags = set()
+        for g in games:
+            all_regions.update(g['regions'])
+            all_tags.update(g['tags'])
+        print("\nSummary of regions found:")
+        print(sorted(all_regions))
+        print("Summary of tags found:")
+        print(sorted(all_tags))
     return header_description, games
 
 
@@ -131,8 +153,6 @@ def dat2lpl_split(args, games, header_description):
     if getattr(args, 'verbose', False):
         print(f"Header description: {header_description}")
         print(f"Found {len(games)} games.")
-        for g in games:
-            print(g)
 
     lpl = {
         "version": "1.5",
@@ -181,8 +201,6 @@ def dat2lpl_merged(args, games, header_description, games_master):
     if getattr(args, 'verbose', False):
         print(f"Header description: {header_description}")
         print(f"Found {len(games)} games.")
-        for g in games:
-            print(g)
 
     lpl = {
         "version": "1.5",
@@ -227,7 +245,7 @@ def dat2lpl_merged(args, games, header_description, games_master):
 def main():
     parser = argparse.ArgumentParser(
         description="Convert DAT XML to LPL JSON playlist.",
-        usage="%(prog)s [-h] --input-path INPUT_PATH [--archive-format {None,.zip,.7z}] [-s {Non-merged,Split,Merged}] [-o OUTPUT] -r --map MAPFILE [-v] input"
+        usage="%(prog)s [-h] --input-path INPUT_PATH [--archive-format {None,.zip,.7z}] [-s {Non-merged,Split,Merged}] [-o OUTPUT] [-r [--map MAPFILE] [--map-world]] [-v] input"
     )
     parser.add_argument("input", help="Input DAT XML file")
     parser.add_argument("--input-path", required=True, help="Root path for searching ROM files (required)")
@@ -236,9 +254,10 @@ def main():
     parser.add_argument("-o", "--output", default="output.lpl", help="Output LPL JSON file")
     parser.add_argument("-r", "--region-split", action="store_true", help="Produce separate output files by region")
     parser.add_argument("--map", help="JSON file mapping country/region to output value (requires -r)")
+    parser.add_argument("--map-world", action="store_true", help="Treat 'World' like any other region (do not add to all output files)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument("--enable-network-validation", action="store_true", help="Allow network access for XML schema validation")
-    parser.add_argument("--version", action="version", version="dat2lpl 1.1.0")
+    parser.add_argument("--version", action="version", version="dat2lpl 1.2.0")
     args = parser.parse_args()
 
     if not validate_xml(args.input, args.verbose, args.enable_network_validation):
@@ -282,8 +301,8 @@ def main():
         regions = g['regions']
         if not regions:
             continue
-        # If 'World' is present, add to all output files (except 'World' itself)
-        if 'World' in regions:
+        if 'World' in regions and not getattr(args, 'map_world', False):
+            # Default: If 'World' is present, add to all output files (except 'World' itself)
             for outval in all_output_values:
                 if outval != 'World':
                     output_map.setdefault(outval, []).append(g)

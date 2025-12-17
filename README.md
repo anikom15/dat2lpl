@@ -9,8 +9,9 @@ This tool converts DAT XML files (such as those used by No-Intro) into LPL JSON 
 
 ## Usage
 
+
 ```
-python dat2lpl.py <input_dat.xml> --input-path <ROM_ROOT_PATH> [--archive-format {None,.zip,.7z}] [-s {Non-merged,Split,Merged}] [-o output.lpl] [-r] [--map MAPFILE] [-v] [--enable-network-validation]
+python dat2lpl.py <input_dat.xml> --input-path <ROM_ROOT_PATH> [--archive-format {None,.zip,.7z}] [-s {Non-merged,Split,Merged}] [-o output.lpl] [-r] [--map MAPFILE] [--map-world] [-v] [--enable-network-validation]
 ```
 
 - `<input_dat.xml>`: Path to the No-Intro style DAT XML file.
@@ -20,19 +21,27 @@ python dat2lpl.py <input_dat.xml> --input-path <ROM_ROOT_PATH> [--archive-format
 - `-o`, `--output`: Output LPL file name. Default is `output.lpl`.
 - `-r`, `--region-split`: Produce separate output files by region.
 - `--map`: JSON file mapping country/region to output value (requires `-r`).
+- `--map-world`: Treat 'World' like any other region (do not add to all output files).
 - `-v`, `--verbose`: Enable verbose output.
 - `--enable-network-validation`: Allow network access for XML schema validation.
 
 ## Example
 
 ```
-python dat2lpl.py sample.dat --input-path "E:\ROM\No-Intro\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -s Merged -v
+python dat2lpl.py sample.dat --input-path ".\ROM\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -s Merged -v
 ```
+
 
 Region split example:
 
 ```
-python dat2lpl.py sample.dat --input-path "E:\ROM\No-Intro\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -r --map snes-country2standard.json -v
+python dat2lpl.py sample.dat --input-path ".\ROM\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -r --map snes-country2standard.json -v
+```
+
+To treat 'World' as a normal region (not added to all outputs):
+
+```
+python dat2lpl.py sample.dat --input-path ".\ROM\Nintendo - Super Nintendo Entertainment System" --archive-format .7z -r --map snes-country2standard.json --map-world -v
 ```
 
 ## Output

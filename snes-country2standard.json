@@ -17,5 +17,6 @@
   "China": "SECAM-D",
   "Hong Kong": "PAL-I",
   "Taiwan": "NTSC-M",
-  "Unknown": "NTSC-M"
+  "Unknown": "NTSC-M",
+  "World": "World"
 }
