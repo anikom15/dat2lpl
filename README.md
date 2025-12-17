@@ -3,9 +3,9 @@
 This tool converts DAT XML files (such as those used by No-Intro) into LPL JSON playlists compatible with RetroArch.
 
 ## Current Limitations
-- **Designed for merged No-Intro style sets only**: The script expects the input DAT and ROM directory structure to follow the conventions of merged No-Intro sets. It is not intended for split or non-merged sets, or for other DAT formats.
+- **Designed for No-Intro style sets only**: The script expects the input DAT and ROM directory structure to follow the conventions of No-Intro sets. It is not tested on multifile ROM sets (like MAME) and may not work with other DAT formats.
 - Only the first ROM entry per game is used in the playlist.
-- Archive format and input path must be specified via command-line arguments.
+- Input path must be specified via command-line arguments.
 
 ## Usage
 
